@@ -85,7 +85,7 @@ class Puzzle:
 
 		counterDict = {idx: commonAs.count(idx) for idx in commonAs}
 		twosOrMore = [(x, y) for x, y in counterDict.items()]
-		twosOrMore = list(filter(lambda x: x[1] == 2, twosOrMore))
+		twosOrMore = list(filter(lambda x: x[1] >= 2, twosOrMore))
 		self.counter = len(twosOrMore)
 
 def IsOutOfBound(listLength, idx):
@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
 	puzzle.solve_part2()
 	print("part2:", puzzle.counter)
-s
+
 	# ws = []
 	# with open('input_day4.txt', 'r') as f:
 	# 	for line in f.readlines():
