@@ -27,10 +27,9 @@ with open("input_day2.txt") as file:
 print(safeCount)
 
 # part 2
-def isAlmostStrictlyOrdered(report):
-	reportSort = sorted(report)
+def isAlmostStrictlyOrdered(report, reportSort):
 	reportZip = zip(report, reportSort)
-	firstDifference = -1
+	difference = -1
 	
 	res = False
 	for x, y in reportZip:
@@ -40,14 +39,10 @@ def isAlmostStrictlyOrdered(report):
 			reportCopy.remove(difference)
 			res = res or isSafe(reportCopy)
 
-	if firstDifference == -1:
+	if difference == -1:
 		return isSafe(report)
 
 	return res
-
-	reportCopy = report[:]
-	reportCopy.remove(firstDifference)
-	return isSafe(reportCopy)
 
 def isAlmostNotHugeJump(report):
 	indexesWithDifference = [(i, abs(report[i] - report[i + 1])) for i in range(len(report) - 1)]
@@ -76,14 +71,13 @@ def isAlmostSafe(report: list[str]) -> bool:
 		reportCopyReverse.remove(duplicateItem)
 		return isSafe(reportCopyPlain) or isSafe(reportCopyReverse)
 
-	return isAlmostStrictlyOrdered(report) or isAlmostNotHugeJump(report)
+	return isAlmostStrictlyOrdered(report, sorted(report)) or isAlmostNotHugeJump(report)
 
 almostSafeCount = 0
 
 with open("input_day2.txt") as file:
 	for report in file:
 		report = list(map(lambda x: int(x.strip()), report.split()))
-		# print(report)
 		if isAlmostSafe(report):
 			almostSafeCount += 1
 
