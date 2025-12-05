@@ -5,13 +5,6 @@ GUARDS = {
 	"<": (0, -1)
 	}
 
-NEXT = {
-	"^":">",
-	">":"V",
-	"V":"<",
-	"<":"^" 
-	}
-
 class Guard:
 	def __init__(self, x: int, y: int, direction: str):
 		self.x = x
@@ -26,7 +19,7 @@ class Guard:
 
 class HistoricalDay:
 	def __init__(self):
-		self.filename = "input_day6.1.txt"
+		self.filename = "input_day6.txt"
 		self.map = []
 		self.guard = ""
 		self.freeze_time = False
@@ -93,6 +86,7 @@ class HistoricalDay:
 		elif self.is_hitting_obstacle(new_position[0], new_position[1]):
 			self.guard.direction = direction
 			self.obstacles.append((new_position[0], new_position[1]))
+			self.route_2.add((self.guard.x, self.guard.y, self.guard.direction))
 		else:
 			self.guard.x, self.guard.y = new_position[0], new_position[1]
 			self.route_unique.add((self.guard.x, self.guard.y))
@@ -104,21 +98,6 @@ class HistoricalDay:
 	def is_hitting_obstacle(self, x, y):
 		return self.map[x][y] in ["#", "O"]
 
-	def has_obstacle_in_direction(self, current_pos, direction):
-		match direction:
-			case "^":
-				pathway = self.map[current_pos[0]]
-				return any([pathway[x] in ["#", "O"] for x in range(current_pos[1] + 1, len(pathway))])
-			case ">":
-				pathway = [row[current_pos[1]] for row in self.map]
-				return any([pathway[x] in ["#", "O"] for x in range(current_pos[0] + 1, len(pathway))])
-			case "<":
-				pathway = [row[current_pos[1]] for row in self.map]
-				return any([pathway[x] in ["#", "O"] for x in range(0, current_pos[0])])
-			case "V":
-				pathway = self.map[current_pos[0]]
-				return any([pathway[x] in ["#", "O"] for x in range(0, current_pos[1])])
-
 def run_simulation(day, x, y, direction, possible_obstacles):
 	x0, y0 = x, y
 	dx, dy = GUARDS[direction]
@@ -129,30 +108,16 @@ def run_simulation(day, x, y, direction, possible_obstacles):
 		day.map[x] = day.map[x][:y] + "O" + day.map[x][y + 1:]
 		if day.walk_path_loops():
 			possible_obstacles.add((x, y))
-	
-	# corner case
-	else:
-		x, y = x0, y0
-		dx, dy = GUARDS[NEXT[direction]]
-		x, y = x + dx, y + dy
-		if not day.is_moving_out(x, y) and not day.is_hitting_obstacle(x, y):
-			day.map[x] = day.map[x][:y] + "O" + day.map[x][y + 1:]
-			if day.walk_path_loops():
-				possible_obstacles.add((x, y))
 
 if __name__ == "__main__":
 	day = HistoricalDay()
 	starting_pos = (day.guard.x, day.guard.y, day.guard.direction)
 
 	day.walk_path()
+	print(day.route_2)
 	print(len(day.route_unique))
 
 	path = set(day.route_2) - {starting_pos}
-
-	print(day.has_obstacle_in_direction((5, 6), ">"))
-	print(day.route_2)
-	print(len(day.route_unique))
-	print(len(day.route_2))
 	
 	# Try putting obstacle in each path
 	possible_obstacles = set()
@@ -174,3 +139,19 @@ if __name__ == "__main__":
 
 	print(possible_obstacles)
 	print(len(possible_obstacles))
+
+
+	# def has_obstacle_in_direction(self, current_pos, direction):
+	# 	match direction:
+	# 		case "^":
+	# 			pathway = self.map[current_pos[0]]
+	# 			return any([pathway[x] in ["#", "O"] for x in range(current_pos[1] + 1, len(pathway))])
+	# 		case ">":
+	# 			pathway = [row[current_pos[1]] for row in self.map]
+	# 			return any([pathway[x] in ["#", "O"] for x in range(current_pos[0] + 1, len(pathway))])
+	# 		case "<":
+	# 			pathway = [row[current_pos[1]] for row in self.map]
+	# 			return any([pathway[x] in ["#", "O"] for x in range(0, current_pos[0])])
+	# 		case "V":
+	# 			pathway = self.map[current_pos[0]]
+	# 			return any([pathway[x] in ["#", "O"] for x in range(0, current_pos[1])])

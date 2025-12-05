@@ -95,3 +95,25 @@ Partial ordering
 
 ### Focus
 `set, set.intersection, set.add list.index, dict.get, dictionary comprehensions`
+
+# Day 6
+
+Path simulation, graph traversal, brute force with pruning, infinite loop detection
+
+### Part 1
+- Run a simply simulation by moving through a 2D array based on starting index and direction
+- Stop the simulation when you move out of the 2D array
+- Store all visited nodes (indices) along the way in a set and return the count
+
+### Part 2
+- Requires creativity in reducing search space for possible obstruction placement
+- For e.g. placing an obstruction outside of original path of guard won't cause guard's path to change/make him stuck in an infinite cycle
+- So place the obstruction on each slot in path from part 1, and repeat the simulation from part 1
+- For each simulation for the new obstruction, if the guard get's stuck in a cycle, add that obstruction indexes to the set of viable solutions
+- Requires creativity for detecting guard stuck in infinite cycle
+- Bad solution is find a subset of obstacles that repeat consecutively in same order. I tried this with 4, but turns out you can cause infinite cycles with 6, 8 and so on.
+- Good solution sees that if a guard is at index x, y and facing the same direction as before, he is stuck in a cycle
+- So from part 1, you don't simply store indexes of the path but also the direction at the index and use (x, y, direction) to detect cycles
+
+### Focus
+`set, set.intersection, set.add, string slicing,  dict, list.index`
